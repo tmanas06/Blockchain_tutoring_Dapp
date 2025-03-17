@@ -1,120 +1,98 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Calendar, Clock, DollarSign, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getContract, formatContractError, setupNetwork } from "@/lib/contract"
-import { ethers } from "ethers"
+import { useState } from "react";
+import { Calendar, Clock, DollarSign, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getContract, formatContractError, setupNetwork } from "@/lib/contract";
+import { ethers } from "ethers";
 
 export default function PaymentPage() {
-  const [tutorAddress, setTutorAddress] = useState("")
-  const [sessionDate, setSessionDate] = useState("")
-  const [sessionTime, setSessionTime] = useState("")
-  const [feedback, setFeedback] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  const [tutorAddress, setTutorAddress] = useState("");
+  const [sessionDate, setSessionDate] = useState("");
+  const [sessionTime, setSessionTime] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleConnectWallet = async () => {
     try {
-      await setupNetwork()
-      setSuccess("Successfully connected to EDU Chain")
+      await setupNetwork();
+      setSuccess("Successfully connected to EDU Chain");
     } catch (error) {
-      setError(error.message || "Failed to connect to EDU Chain")
+      setError(error.message || "Failed to connect to EDU Chain");
     }
-  }
+  };
 
   const scheduleTutoring = async () => {
     if (!tutorAddress || !sessionDate || !sessionTime) {
-      setError("Please fill in all required fields")
-      return
+      setError("Please fill in all required fields");
+      return;
     }
 
-    setLoading(true)
-    setError("")
-    setSuccess("")
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
     try {
-      await setupNetwork()
-      const contract = await getContract()
+      await setupNetwork();
+      const contract = await getContract();
 
       // Convert date and time to timestamp
-      const dateTime = new Date(`${sessionDate}T${sessionTime}`)
-      const timestamp = Math.floor(dateTime.getTime() / 1000)
+      const dateTime = new Date(`${sessionDate}T${sessionTime}`);
+      const timestamp = Math.floor(dateTime.getTime() / 1000);
 
-      const tx = await contract.scheduleTutoring(tutorAddress, timestamp)
-      await tx.wait()
+      // Schedule the tutoring session
+      const scheduleTx = await contract.scheduleTutoring(tutorAddress, timestamp);
+      await scheduleTx.wait();
 
-      setSuccess("Tutoring session scheduled successfully!")
-      console.log("Tutoring scheduled successfully")
-    } catch (error) {
-      console.error("Error scheduling tutoring:", error)
-      setError(formatContractError(error))
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const makePayment = async () => {
-    if (!tutorAddress) {
-      setError("Please enter tutor address")
-      return
-    }
-
-    setLoading(true)
-    setError("")
-    setSuccess("")
-
-    try {
-      await setupNetwork()
-      const contract = await getContract()
-
-      const tx = await contract.makePayment(tutorAddress, {
+      // Make the payment
+      const paymentTx = await contract.makePayment(tutorAddress, {
         value: ethers.parseEther("0.001"), // Pay 0.001 EDU
-      })
-      await tx.wait()
+      });
+      await paymentTx.wait();
 
-      setSuccess("Payment made successfully!")
-      console.log("Payment made successfully")
+      setSuccess("Tutoring session scheduled and paid successfully!");
+      console.log("Tutoring scheduled and paid successfully");
     } catch (error) {
-      console.error("Error making payment:", error)
-      setError(formatContractError(error))
+      console.error("Error scheduling and paying for tutoring:", error);
+      setError(formatContractError(error));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const leaveFeedback = async () => {
     if (!tutorAddress || !feedback) {
-      setError("Please enter tutor address and feedback")
-      return
+      setError("Please enter tutor address and feedback");
+      return;
     }
 
-    setLoading(true)
-    setError("")
-    setSuccess("")
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
     try {
-      await setupNetwork()
-      const contract = await getContract()
+      await setupNetwork();
+      const contract = await getContract();
 
-      const tx = await contract.leaveFeedback(tutorAddress, feedback)
-      await tx.wait()
+      const tx = await contract.leaveFeedback(tutorAddress, feedback);
+      await tx.wait();
 
-      setSuccess("Feedback submitted successfully!")
-      console.log("Feedback left successfully")
-      setFeedback("")
+      setSuccess("Feedback submitted successfully!");
+      console.log("Feedback left successfully");
+      setFeedback("");
     } catch (error) {
-      console.error("Error leaving feedback:", error)
-      setError(formatContractError(error))
+      console.error("Error leaving feedback:", error);
+      setError(formatContractError(error));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -140,7 +118,11 @@ export default function PaymentPage() {
           </CardContent>
         </Card>
 
-        {error && <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-md mb-6">{error}</div>}
+        {error && (
+          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-md mb-6">
+            {error}
+          </div>
+        )}
 
         {success && (
           <div className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-4 py-3 rounded-md mb-6">
@@ -149,9 +131,8 @@ export default function PaymentPage() {
         )}
 
         <Tabs defaultValue="schedule" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="schedule">Schedule</TabsTrigger>
-            <TabsTrigger value="payment">Payment</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
           </TabsList>
 
@@ -160,6 +141,10 @@ export default function PaymentPage() {
               <CardHeader>
                 <CardTitle>Schedule a Tutoring Session</CardTitle>
                 <CardDescription>Book a one-on-one session with a blockchain expert</CardDescription>
+              </CardHeader>
+              <CardHeader>
+                <CardTitle>Payment Details</CardTitle>
+                <CardDescription>Session fee: 0.001 EDU</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -206,32 +191,15 @@ export default function PaymentPage() {
               </CardContent>
               <CardFooter>
                 <Button onClick={scheduleTutoring} disabled={loading} className="w-full">
-                  {loading ? "Processing..." : "Schedule Session"}
+                  {loading ? "Processing..." : "Schedule and Pay"}
                 </Button>
               </CardFooter>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="payment">
-            <Card>
-              <CardHeader>
-                <CardTitle>Make a Payment</CardTitle>
-                <CardDescription>Pay for your scheduled tutoring session</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="payment-tutor-address">Tutor Address</Label>
-                  <div className="flex">
-                    <User className="mr-2 h-4 w-4 opacity-50 self-center" />
-                    <Input
-                      id="payment-tutor-address"
-                      placeholder="0x..."
-                      value={tutorAddress}
-                      onChange={(e) => setTutorAddress(e.target.value)}
-                      disabled={loading}
-                    />
-                  </div>
-                </div>
+            {/* Payment Information Below Schedule
+            <Card className="mt-4"> */}
+              
+              {/* <CardContent className="space-y-4">
                 <div className="rounded-lg border p-4">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
@@ -241,13 +209,8 @@ export default function PaymentPage() {
                     <span className="font-medium">0.001 EDU</span>
                   </div>
                 </div>
-              </CardContent>
-              <CardFooter>
-                <Button onClick={makePayment} disabled={loading} className="w-full">
-                  {loading ? "Processing..." : "Pay 0.001 EDU"}
-                </Button>
-              </CardFooter>
-            </Card>
+              </CardContent> */}
+            {/* </Card> */}
           </TabsContent>
 
           <TabsContent value="feedback">
@@ -292,6 +255,5 @@ export default function PaymentPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }
-

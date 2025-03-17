@@ -1,12 +1,13 @@
-"use client"
+"use client";
 
-import { CheckCircle, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Progress } from "@/components/ui/progress"
-import { useState, useEffect } from "react"
+import * as React from "react";
+import { CheckCircle, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Progress } from "@/components/ui/progress";
+import { useState, useEffect } from "react";
 
 const initialCourses = [
   {
@@ -17,194 +18,112 @@ const initialCourses = [
       { 
         title: "What is Blockchain?", 
         completed: false,
-        content: "Blockchain is a decentralized, distributed digital ledger that records transactions across a network of computers. Each block contains transaction data and is linked to previous blocks, forming a chain."
+        content: "Blockchain is a decentralized, distributed digital ledger that records transactions across a network of computers. Each block contains transaction data and is linked to previous blocks, forming a chain.",
+        liveLink: "https://www.youtube.com/watch?v=yubzJw0uiE4" // Add live link for each module
       },
       { 
         title: "Decentralization and Consensus", 
         completed: false,
-        content: "Decentralization removes the need for a central authority, while consensus mechanisms ensure agreement among network participants about the state of the blockchain."
+        content: "Decentralization removes the need for a central authority, while consensus mechanisms ensure agreement among network participants about the state of the blockchain.",
+        liveLink: "https://www.youtube.com/watch?v=M3RYFJsLC_A"
       },
       { 
         title: "Cryptography Basics", 
         completed: false,
-        content: "Cryptography secures blockchain networks through public-private key pairs, digital signatures, and hash functions."
+        content: "Cryptography secures blockchain networks through public-private key pairs, digital signatures, and hash functions.",
+        liveLink: "https://www.youtube.com/watch?v=GQvu49c0ZZc"
       },
       { 
         title: "Blockchain Architecture", 
         completed: false,
-        content: "Blockchain architecture consists of nodes, blocks, transactions, and the consensus mechanism working together to maintain the network."
+        content: "Blockchain architecture consists of nodes, blocks, transactions, and the consensus mechanism working together to maintain the network.",
+        liveLink: "https://www.youtube.com/watch?v=sTFZras-1Lo"
       },
     ],
     progress: 0,
     currentModule: 0,
   },
-  {
-    id: "smart-contracts",
-    title: "Smart Contract Development",
-    description: "Master the art of writing and deploying smart contracts",
-    modules: [
-      { 
-        title: "Introduction to Smart Contracts", 
-        completed: false,
-        content: "Smart contracts are self-executing contracts with the terms of the agreement directly written into code."
-      },
-      { 
-        title: "Solidity Programming Language", 
-        completed: false,
-        content: "Solidity is the primary programming language for writing smart contracts on Ethereum and compatible blockchains."
-      },
-      { 
-        title: "Testing and Debugging", 
-        completed: false,
-        content: "Learn how to test and debug smart contracts using various tools and frameworks."
-      },
-      { 
-        title: "Security Best Practices", 
-        completed: false,
-        content: "Understanding common vulnerabilities and best practices for secure smart contract development."
-      },
-    ],
-    progress: 0,
-    currentModule: 0,
-  },
-  {
-    id: "dapp-development",
-    title: "Decentralized Application Development",
-    description: "Build full-stack dApps with modern frameworks",
-    modules: [
-      { 
-        title: "Web3 Integration", 
-        completed: false,
-        content: "Learn how to integrate Web3 functionality into your applications."
-      },
-      { 
-        title: "Frontend Development for dApps", 
-        completed: false,
-        content: "Building user interfaces for decentralized applications."
-      },
-      { 
-        title: "User Authentication with Wallets", 
-        completed: false,
-        content: "Implementing wallet-based authentication in dApps."
-      },
-      { 
-        title: "Deploying and Scaling dApps", 
-        completed: false,
-        content: "Best practices for deploying and scaling decentralized applications."
-      },
-    ],
-    progress: 0,
-    currentModule: 0,
-  },
-  {
-    id: "edu-chain",
-    title: "EDU Chain Specialization",
-    description: "Become an expert in EDU Chain development",
-    modules: [
-      { 
-        title: "EDU Chain Architecture", 
-        completed: false,
-        content: "Understanding the architecture and components of EDU Chain."
-      },
-      { 
-        title: "Building on EDU Chain", 
-        completed: false,
-        content: "Learn how to build applications on the EDU Chain platform."
-      },
-      { 
-        title: "EDU Chain Tools and SDKs", 
-        completed: false,
-        content: "Exploring available tools and SDKs for EDU Chain development."
-      },
-      { 
-        title: "Advanced EDU Chain Concepts", 
-        completed: false,
-        content: "Advanced concepts and features of the EDU Chain platform."
-      },
-    ],
-    progress: 0,
-    currentModule: 0,
-  },
-]
+  // Add more courses here...
+];
 
 export default function AboutPage() {
-  const [courses, setCourses] = useState(initialCourses)
-  const [activeCourse, setActiveCourse] = useState<string | null>(null)
-  const [showLesson, setShowLesson] = useState(false)
+  const [courses, setCourses] = useState(initialCourses);
+  const [activeCourse, setActiveCourse] = useState<string | null>(null);
+  const [showLesson, setShowLesson] = useState(false);
 
   // Load progress from localStorage on component mount
   useEffect(() => {
-    const savedProgress = localStorage.getItem('courseProgress')
+    const savedProgress = localStorage.getItem('courseProgress');
     if (savedProgress) {
-      setCourses(JSON.parse(savedProgress))
+      setCourses(JSON.parse(savedProgress));
     }
-  }, [])
+  }, []);
 
   // Save progress to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('courseProgress', JSON.stringify(courses))
-  }, [courses])
+    localStorage.setItem('courseProgress', JSON.stringify(courses));
+  }, [courses]);
 
   const calculateProgress = (modules: any[]) => {
-    const completedModules = modules.filter(module => module.completed).length
-    return Math.round((completedModules / modules.length) * 100)
-  }
+    const completedModules = modules.filter(module => module.completed).length;
+    return Math.round((completedModules / modules.length) * 100);
+  };
 
   const toggleModuleCompletion = (courseId: string, moduleIndex: number) => {
     setCourses(prevCourses => {
       return prevCourses.map(course => {
         if (course.id === courseId) {
-          const updatedModules = [...course.modules]
+          const updatedModules = [...course.modules];
           updatedModules[moduleIndex] = {
             ...updatedModules[moduleIndex],
             completed: !updatedModules[moduleIndex].completed
-          }
+          };
           return {
             ...course,
             modules: updatedModules,
             progress: calculateProgress(updatedModules)
-          }
+          };
         }
-        return course
-      })
-    })
-  }
+        return course;
+      });
+    });
+  };
 
   const startCourse = (courseId: string) => {
-    setActiveCourse(courseId)
-    setShowLesson(true)
-  }
+    setActiveCourse(courseId);
+    setShowLesson(true);
+  };
 
   const nextModule = (courseId: string) => {
     setCourses(prevCourses => {
       return prevCourses.map(course => {
         if (course.id === courseId) {
-          const currentModule = course.currentModule
-          const nextModule = currentModule + 1
+          const currentModule = course.currentModule;
+          const nextModule = currentModule + 1;
           if (nextModule < course.modules.length) {
             const updatedModules = course.modules.map((module, index) => 
               index === currentModule ? { ...module, completed: true } : module
-            )
+            );
             
-            const newProgress = calculateProgress(updatedModules)
+            const newProgress = calculateProgress(updatedModules);
             
             return {
               ...course,
               currentModule: nextModule,
               modules: updatedModules,
               progress: newProgress
-            }
+            };
           }
         }
-        return course
-      })
-    })
-  }
+        return course;
+      });
+    });
+  };
 
   const getCurrentModule = (courseId: string) => {
-    const course = courses.find(c => c.id === courseId)
-    return course ? course.modules[course.currentModule] : null
-  }
+    const course = courses.find(c => c.id === courseId);
+    return course ? course.modules[course.currentModule] : null;
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -215,7 +134,6 @@ export default function AboutPage() {
             Comprehensive courses to master blockchain technology and smart contract development
           </p>
         </div>
-
         <div className="grid gap-8">
           {courses.map((course) => (
             <Card key={course.id} className="overflow-hidden">
@@ -247,6 +165,14 @@ export default function AboutPage() {
                     <div className="bg-muted p-4 rounded-lg">
                       <h3 className="font-semibold mb-2">{getCurrentModule(course.id)?.title}</h3>
                       <p className="text-muted-foreground">{getCurrentModule(course.id)?.content}</p>
+                      <a 
+                        href={getCurrentModule(course.id)?.liveLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:text-blue-600"
+                      >
+                        View Live Lesson
+                      </a>
                     </div>
                     <div className="flex justify-between items-center">
                       <Button 
@@ -310,6 +236,14 @@ export default function AboutPage() {
                               >
                                 View Lesson
                               </Button>
+                              <a 
+                                href={module.liveLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:text-blue-600"
+                              >
+                                View Live Lesson
+                              </a>
                             </div>
                           </div>
                         </AccordionContent>
@@ -330,6 +264,5 @@ export default function AboutPage() {
         </div>
       </div>
     </div>
-  )
-}
-
+  );
+};

@@ -66,14 +66,14 @@
   }
 
   .sky {
-    --background: 210 50% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 199 89% 98%;
+    --foreground: 199 89% 20%;
 
-    --card: 210 50% 98%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 199 89% 98%;
+    --card-foreground: 199 89% 20%;
 
-    --popover: 210 50% 98%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 199 89% 98%;
+    --popover-foreground: 199 89% 20%;
 
     --primary: 199 89% 48%;
     --primary-foreground: 210 40% 98%;
@@ -82,7 +82,7 @@
     --secondary-foreground: 199 89% 28%;
 
     --muted: 199 89% 94%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 199 89% 40%;
 
     --accent: 199 89% 94%;
     --accent-foreground: 199 89% 28%;
